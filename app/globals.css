@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+/* dark: variants follow the .dark class set by the pre-hydration script,
+   not the media query, so the toggle can override the system preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------
+   Design tokens. One accent, neutral everything else.
+   --------------------------------------------------------------- */
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+
+  --color-bg: #f6f5f3;
+  --color-surface: #efeeeb;
+  --color-fg: #16151a;
+  --color-muted: #6b6a72;
+  --color-faint: #78777f;
+  --color-line: #dedcd7;
+  --color-accent: #d4522a;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* Dark theme: the same tokens, re-pointed. `.dark` is set by the inline
+   pre-hydration script in layout.tsx, so there is no wrong-theme flash. */
+.dark {
+  --color-bg: #0c0c0e;
+  --color-surface: #141416;
+  --color-fg: #f2f1ee;
+  --color-muted: #8e8d95;
+  --color-faint: #8a8992;
+  --color-line: #26262a;
+  --color-accent: #ff6b3d;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Anchor targets clear the fixed navbar. */
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Guards against any transform overshoot creating a horizontal scrollbar. */
+    overflow-x: hidden;
+    transition: background-color 0.4s var(--ease-out-expo),
+      color 0.4s var(--ease-out-expo);
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* The custom cursor only replaces the native one on real pointer devices,
+     and only once it has mounted (body.cursor-active). */
+  @media (hover: hover) and (pointer: fine) {
+    body.cursor-active,
+    body.cursor-active a,
+    body.cursor-active button {
+      cursor: none;
+    }
+  }
+}
+
+@layer utilities {
+  /* Display type: tight, optically balanced, never wider than its measure. */
+  .text-display {
+    font-size: clamp(2.75rem, 11vw, 10rem);
+    line-height: 0.9;
+    letter-spacing: -0.045em;
+    font-weight: 500;
+    /* A single long unbreakable token must wrap, not push the page wide. */
+    overflow-wrap: anywhere;
+  }
+
+  .text-section {
+    font-size: clamp(2rem, 6.5vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+
+  .text-meta {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  /* Clip-path reveal wrapper: child slides up from behind a mask.
+     The padding keeps descenders (g, y, p) from being shaved off by the
+     overflow clip; the equal negative margin keeps layout unchanged. */
+  .mask-line {
+    overflow: hidden;
+    display: block;
+    padding-bottom: 0.14em;
+    margin-bottom: -0.14em;
+  }
+
+  /* Almost-invisible grain. Pure CSS, no image request. */
+  .grain::after {
+    content: "";
+    position: fixed;
+    inset: -50%;
+    pointer-events: none;
+    z-index: 60;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size 0.45s var(--ease-out-expo);
+  }
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+}
+
+/* Reduced motion: content is always present and readable; only movement goes. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .grain::after {
+    display: none;
+  }
+
+  /* Motion components server-render with their `initial` styles inline
+     (opacity:0, transform, clip-path). Under reduced motion the JS reveal
+     is skipped, so without this those inline styles would persist and the
+     content would stay permanently invisible. Content must never be gated
+     behind an animation that will not run. */
+  [style*="opacity:0"],
+  [style*="opacity: 0"] {
+    opacity: 1 !important;
+  }
+  [style*="translateY"],
+  [style*="translate"] {
+    transform: none !important;
+  }
+  [style*="clip-path"],
+  [style*="clipPath"] {
+    clip-path: none !important;
+  }
+}
