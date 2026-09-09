@@ -4,7 +4,7 @@
  * its investigation and its outcome.
  *
  * 01 and 02 come from the Vya cross-application testing work. 03 and 04 are
- * drawn from code authored under support@xorstack.com in the AgriEco backend.
+ * drawn from code you authored in the AgriEco backend.
  */
 export type TechnicalCase = {
   number: string;

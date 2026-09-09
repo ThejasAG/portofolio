@@ -36,9 +36,9 @@ export type Project = {
 };
 
 /**
- * AgriEco is written from verifiable evidence: the commit authored under
- * support@xorstack.com adding the FastAPI backend (1,514 lines across 20
- * files), plus the project's own work-division document.
+ * AgriEco is written from verifiable evidence: your authored commit
+ * adding the FastAPI backend (1,514 lines across 20 files), plus the
+ * project's own work-division document.
  *
  * The Vya entry is deliberately unfilled. No file in this repository
  * records the employer, the role title, the dates, or what was personally

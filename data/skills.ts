@@ -5,7 +5,7 @@ export type SkillGroup = {
 };
 
 /**
- * Every entry below appears in code authored under support@xorstack.com in
+ * Every entry below appears in code you authored in
  * the AgriEco backend (see backend/requirements.txt and the route/database
  * modules), or in this portfolio's own source. Nothing is listed because it
  * is "expected" for the role.

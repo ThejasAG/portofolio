@@ -22,7 +22,7 @@ export const profile = {
   status: null as string | null, // e.g. "Open to backend / QA engineering roles"
 
   location: "Bengaluru, India",
-  email: "support@xorstack.com",
+  email: "thejasag5518@gmail.com",
 
   /** Real URLs only. Leave null and the link is not rendered. */
   github: "https://github.com/ThejasAG" as string | null,
