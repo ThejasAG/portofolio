@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { profile, isPlaceholder } from "@/data/profile";
 import MagneticButton from "./MagneticButton";
+import HeroScene from "./three/HeroScene";
 import { usePrefersReducedMotion } from "@/lib/useReducedMotion";
 
 /** Splits a title on "/" so each segment can be revealed on its own line. */
@@ -52,8 +53,9 @@ export default function Hero({ ready }: { ready: boolean }) {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[100svh] flex-col justify-end px-6 pb-10 pt-32 sm:px-10 sm:pb-14"
+      className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden px-6 pb-10 pt-32 sm:px-10 sm:pb-14"
     >
+      <HeroScene />
       <motion.div style={reduced ? undefined : { y, opacity }}>
         {profile.status && (
           <motion.p

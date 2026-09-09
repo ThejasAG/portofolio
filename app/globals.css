@@ -82,6 +82,11 @@
   }
 }
 
+@keyframes sceneIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 @layer utilities {
   /* Display type: tight, optically balanced, never wider than its measure. */
   .text-display {
