@@ -13,7 +13,7 @@ export const profile = {
 
   /** Hero positioning statement. Split across lines for the staggered reveal. */
   statement: [
-    "I build applications, automation systems and backend services —",
+    "I build applications, automation systems and backend services,",
     "and I enjoy understanding what happens when real software",
     "meets real users.",
   ],
