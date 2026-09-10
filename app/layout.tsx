@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { profile, isPlaceholder } from "@/data/profile";
 import "./globals.css";
 
@@ -70,6 +71,9 @@ export default function RootLayout({
           Skip to content
         </a>
         {children}
+        {/* Vercel Web Analytics. No-ops outside a Vercel deployment, so
+            local development and other hosts are unaffected. */}
+        <Analytics />
       </body>
     </html>
   );
