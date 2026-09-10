@@ -10,52 +10,35 @@ export type Role = {
 };
 
 /**
- * The AgriEco entry is verifiable from the authored backend commit and the
- * project's work-division document. The Vya role is left unfilled because
- * the employer, title and dates are not recorded anywhere in this repository.
+ * Xorstack is the employer. Vya is a product worked on during that
+ * internship, not a company — it lives in data/projects.ts as a case study.
+ *
+ * The work below is factual; the title, dates and location are the only
+ * fields still needed. Commit activity under the work email runs from
+ * 2026-07 to 2026-09, but commit dates are not employment dates, so the
+ * period is left for you to supply rather than inferred.
  */
 export const experience: Role[] = [
   {
-    // The work below is factual. The employer name, job title and dates are
-    // the only things still needed here.
-    company: "Vya", // CONTENT_REQUIRED — confirm the employer name as it should appear
-    role: "CONTENT_REQUIRED", // your actual job title
-    period: "CONTENT_REQUIRED", // absolute dates, e.g. "Jan 2025 — Aug 2025"
+    company: "Xorstack",
+    role: "CONTENT_REQUIRED", // your actual internship title
+    period: "CONTENT_REQUIRED", // absolute dates, e.g. "Jun 2026 — Present"
     location: "CONTENT_REQUIRED",
     points: [
       "Tested the Vya Consumer and Business applications and compared their behaviour and outputs, treating agreement between the two as the correctness condition rather than checking either in isolation.",
       "Investigated invoice and VAT calculation consistency across different rates, and traced discrepancies to premature per-unit rounding — a case where a correct €8.42 total accompanied a VAT line one cent out.",
+      "Built and maintained a mobile test orchestration platform — FastAPI backend, React dashboard and Appium execution agents — and led the reliability work that stopped runs reporting results which did not match device behaviour.",
       "Validated application workflows and API responses on real devices, and evaluated parallel execution across multiple applications and devices along with its practical limits.",
-      "Ran the cross-application comparisons as regression checks, since rounding behaviour is easily disturbed by pricing or tax-handling changes.",
-    ],
-    technologies: [
-      "Invoice validation",
-      "VAT validation",
-      "Regression testing",
-      "Real-device testing",
-      "Parallel testing",
-      "API validation",
-    ],
-  },
-  {
-    company: "AgriEco — final-year engineering project",
-    role: "Backend engineer (academic project)",
-    period: "2026",
-    location: "Dr. Ambedkar Institute of Technology, Bengaluru",
-    points: [
-      "Built the FastAPI backend and relational schema for a farming advisory platform: farmers, farms, soil records and crop sessions, with seven domain route modules.",
-      "Designed the service to run before the machine learning models it serves existed — lazy loaders and 503 responses naming the missing artefact, so frontend work never blocked on the ML timeline.",
-      "Implemented token authentication and scoped every record lookup by the authenticated owner, so one account cannot read or write another's data.",
-      "Wrote the smoke test suite covering auth, input validation, degraded model responses and cross-account access, runnable with no external services configured.",
     ],
     technologies: [
       "Python",
       "FastAPI",
-      "SQLAlchemy",
+      "Appium",
       "PostgreSQL",
-      "MongoDB",
-      "Redis",
-      "pytest",
+      "Alembic",
+      "React",
+      "Invoice & VAT validation",
+      "Real-device testing",
       "Git",
     ],
   },

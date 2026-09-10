@@ -5,10 +5,9 @@ export type SkillGroup = {
 };
 
 /**
- * Every entry below appears in code you authored in
- * the AgriEco backend (see backend/requirements.txt and the route/database
- * modules), or in this portfolio's own source. Nothing is listed because it
- * is "expected" for the role.
+ * Every entry below appears in code you authored — the AgriEco backend, the
+ * test orchestration platform, the Medical Voice Bot, or this portfolio.
+ * Nothing is listed because it is "expected" for the role.
  */
 export const skills: SkillGroup[] = [
   {
@@ -17,25 +16,31 @@ export const skills: SkillGroup[] = [
   },
   {
     category: "Backend",
-    items: ["FastAPI", "SQLAlchemy", "Pydantic", "REST APIs", "JWT / OAuth2"],
+    items: ["FastAPI", "SQLAlchemy", "Alembic", "Pydantic", "REST APIs", "JWT / OAuth2"],
   },
   {
     category: "Data",
     items: ["PostgreSQL", "MongoDB", "Redis", "Schema design", "Migrations"],
   },
   {
-    category: "Testing & quality",
+    category: "Testing & automation",
     items: [
+      "Appium",
+      "Selenium",
       "pytest",
-      "API contract testing",
-      "Input validation",
+      "Real-device testing",
       "Regression testing",
+      "API validation",
       "Debugging",
     ],
   },
   {
+    category: "AI / ML",
+    items: ["scikit-learn", "NLTK", "pandas", "NumPy"],
+  },
+  {
     category: "Frontend",
-    items: ["React", "Next.js", "Tailwind CSS"],
+    items: ["React", "Next.js", "Vite", "Tailwind CSS"],
   },
   {
     category: "Tools",
