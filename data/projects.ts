@@ -11,6 +11,12 @@ export type Project = {
   technologies: string[];
   /** Path under /public. Leave null for a typographic placeholder panel. */
   image: string | null;
+  /**
+   * Slug of an architecture diagram in public/diagrams/. Shown in place of
+   * the image placeholder until a real screenshot exists — a diagram of the
+   * real system beats an empty panel.
+   */
+  diagram?: string;
   imageAlt: string;
   /** Optional second layer for the parallax image stack. */
   imageBack?: string | null;
@@ -45,6 +51,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "automation-platform",
+    diagram: "automation-platform",
     number: "01",
     title: "Automation Platform",
     category: "iOS test automation & reliability",
@@ -117,6 +124,7 @@ export const projects: Project[] = [
   },
   {
     slug: "medical-voice-bot",
+    diagram: "medical-voice-bot",
     number: "02",
     title: "Medical Voice Bot",
     category: "AI / voice interface",
@@ -147,6 +155,7 @@ export const projects: Project[] = [
   },
   {
     slug: "food-delivery",
+    diagram: "food-delivery",
     number: "03",
     title: "Food Delivery Application",
     category: "Full-stack application",
@@ -177,6 +186,7 @@ export const projects: Project[] = [
   },
   {
     slug: "agrieco-backend",
+    diagram: "agrieco-backend",
     number: "04",
     title: "AgriEco",
     category: "Backend & data platform",

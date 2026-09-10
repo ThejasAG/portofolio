@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowUpRight, GitBranch } from "lucide-react";
 import type { Project } from "@/data/projects";
 import ProjectVisual from "./ProjectVisual";
+import ProjectDiagram from "./ProjectDiagram";
 import SectionReveal from "./SectionReveal";
 import MaskReveal from "./MaskReveal";
 
@@ -45,7 +46,13 @@ export default function ProjectCard({
 
       <div className="mt-8 grid gap-8 lg:grid-cols-12 lg:gap-x-10">
         <div className={`min-w-0 ${L.col}`}>
-          {href ? (
+          {!project.image && project.diagram ? (
+            <ProjectDiagram
+              slug={project.diagram}
+              title={project.title}
+              className={`w-full ${L.ratio}`}
+            />
+          ) : href ? (
             <Link
               href={href}
               data-cursor="VIEW"
