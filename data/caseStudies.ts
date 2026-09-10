@@ -25,7 +25,7 @@ export const technicalCases: TechnicalCase[] = [
   {
     number: "01",
     title: "Smarter regression test selection",
-    domain: "Test orchestration — Xorstack",
+    domain: "Automation platform — Xorstack",
     problem:
       "Running the full regression suite after every code change is slow, and most of the run has nothing to do with what changed. Narrowing it is only safe if a skipped test can be shown to be unaffected.",
     investigation:
@@ -38,16 +38,16 @@ export const technicalCases: TechnicalCase[] = [
   },
   {
     number: "02",
-    title: "Reliable mobile test orchestration",
-    domain: "Test orchestration — Xorstack",
+    title: "Reliable iOS test execution",
+    domain: "Automation platform — Xorstack",
     problem:
       "Runs were reporting outcomes that did not match what happened on the device. A suite that reports the wrong answer is worse than no suite: it costs the team time and teaches them to ignore failures.",
     investigation:
-      "The causes were infrastructural rather than in the tests: agents reaching past the API, device resolution that assumed one machine, processes that outlived their run, and a schema Alembic did not really own.",
+      "The causes were infrastructural rather than in the tests: agents reaching past the API, device resolution that assumed one Mac, WebDriverAgent sessions and simulator state outliving their run, and a schema Alembic did not really own.",
     approach:
-      "Put the agents behind the backend API so one place decides what a run may do; made device resolution machine-aware so an agent only allocates devices on its own host; gave runs a real process lifecycle with device reservation; and made Alembic authoritative over the schema.",
+      "Put the agents behind the backend API so one place decides what a run may do; made device resolution machine-aware so an agent only allocates iPhones and simulators on its own Mac; gave runs a real process lifecycle with device reservation covering WebDriverAgent sessions; and made Alembic authoritative over the schema.",
     result:
-      "Runs report what actually happened on the device, two runs cannot claim the same device, and a fresh machine rebuilds its database from migrations.",
+      "Runs report what actually happened on the device, two runs cannot claim the same iPhone or simulator, and a fresh Mac rebuilds its database from migrations.",
   },
   {
     number: "03",

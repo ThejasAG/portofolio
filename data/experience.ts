@@ -24,7 +24,7 @@ export const experience: Role[] = [
       "Worked on manual testing and validation of the Vya Consumer and Business application workflows, comparing behaviour and output between the two applications rather than checking either in isolation.",
       "Validated invoices and VAT calculations across different rates, and investigated the cases where the two applications disagreed — tracing one to a per-unit value being rounded a step too early.",
       "Ran regression and real-device testing across application workflows, and looked at how far multiple applications and devices could be tested in parallel.",
-      "Built and maintained an internal mobile test orchestration platform, including the reliability work that stopped runs reporting results which did not match device behaviour.",
+      "Built and maintained an internal iOS automation platform \u2014 FastAPI backend, React dashboard and Appium/XCUITest execution agents \u2014 including the reliability work that stopped runs reporting results which did not match device behaviour.",
     ],
     technologies: [
       "Manual testing",

@@ -44,24 +44,26 @@ export type Project = {
  */
 export const projects: Project[] = [
   {
-    slug: "test-orchestration-platform",
+    slug: "automation-platform",
     number: "01",
-    title: "Test Orchestration Platform",
-    category: "Automation & reliability engineering",
+    title: "Automation Platform",
+    category: "iOS test automation & reliability",
     description:
-      "Running the full regression suite after every change is slow. This platform works out which tests a change can actually affect, and runs only those across real devices.",
+      "Running the full regression suite after every change is slow. This platform works out which tests a change can actually affect, and runs only those across real iOS devices and simulators.",
     longDescription:
-      "A mobile test orchestration platform: a FastAPI backend, a React dashboard, and execution agents that drive real Android and iOS devices through Appium. Its core idea is impact-based selection — a change's files are resolved through a dependency graph into the set of affected modules, and only scenarios whose declared coverage touches those modules are run. Scenarios with no coverage tags are run anyway rather than skipped, so selection never silently drops a test it cannot reason about.",
-    role: "Built and maintained the platform during the Xorstack internship: backend API, execution agents, device allocation, migrations and the reliability work.",
+      "An iOS test automation platform: a FastAPI backend, a React dashboard, and execution agents that drive real iPhones and simulators through Appium's XCUITest driver. Devices are discovered through xcrun simctl and Xcode, and each run is backed by its own WebDriverAgent session. Its core idea is impact-based selection — a change's files are resolved through a dependency graph into the set of affected modules, and only scenarios whose declared coverage touches those modules are run. Scenarios with no coverage tags are run anyway rather than skipped, so selection never silently drops a test it cannot reason about.",
+    role: "Built and maintained the platform during the Xorstack internship: backend API, iOS device discovery, execution agents, WebDriverAgent session handling, migrations and the reliability work.",
     technologies: [
       "Python",
       "FastAPI",
       "Appium",
-      "Selenium",
+      "XCUITest",
+      "WebDriverAgent",
+      "xcrun simctl",
       "SQLAlchemy",
       "Alembic",
       "React",
-      "GitPython",
+      "TypeScript",
     ],
     image: null,
     imageAlt:
@@ -74,11 +76,11 @@ export const projects: Project[] = [
     layout: "wide",
     study: {
       overview:
-        "A platform for orchestrating mobile regression testing: selecting relevant tests from code changes, then coordinating their execution across real devices, with a dashboard for registering projects and reading reports.",
+        "A platform for orchestrating iOS regression testing: selecting relevant tests from code changes, then coordinating their execution across real iPhones and simulators, with a dashboard for registering projects and reading reports.",
       problem:
         "Running a full regression suite after every code change is slow, and most of it is irrelevant to what actually changed. But narrowing the run is only safe if you can show a skipped test could not have been affected — otherwise you are trading time for missed defects.",
       context:
-        "Mobile applications tested on real Android and iOS devices, across more than one machine, with runs triggered manually or from a GitHub webhook.",
+        "iOS applications tested on real iPhones and booted simulators, across more than one Mac, with runs triggered manually or from a GitHub webhook. iOS makes this harder than Android: automation runs through WebDriverAgent, which has to be built and kept alive per device.",
       role:
         "I built and maintained the platform: the backend API, execution agents, device allocation, database migrations and the reliability work.",
       approach: [
@@ -89,14 +91,15 @@ export const projects: Project[] = [
       ],
       implementation: [
         "FastAPI backend with SQLAlchemy models and Alembic owning the schema.",
-        "Execution agents driving real devices through Appium and Selenium.",
+        "Execution agents driving iOS devices through Appium\u2019s XCUITest driver, with device discovery via xcrun simctl and Xcode.",
         "React dashboard for registering projects from a Git URL, triggering runs and reading reports.",
-        "Device reservation and process lifecycle, with machine-aware resolution so an agent only allocates devices present on its host.",
+        "Device reservation and process lifecycle covering WebDriverAgent sessions, with machine-aware resolution so an agent only allocates devices present on its own Mac.",
       ],
       challenges: [
         "Making selection sound: the value is in tests skipped, but the risk is skipping one that mattered.",
         "Runs reporting outcomes that did not match device behaviour — a suite that reports the wrong answer is worse than none.",
         "A schema Alembic did not truly own, so a fresh machine could not be reproduced reliably.",
+        "WebDriverAgent sessions and simulator state outliving their run, leaving devices unusable for the next one.",
       ],
       validation: [
         "Reproduced each reliability bug before fixing it, so the fix addressed the actual cause.",
