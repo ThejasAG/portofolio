@@ -5,45 +5,32 @@ export type SkillGroup = {
 };
 
 /**
- * Every entry below appears in code you authored — the AgriEco backend, the
- * test orchestration platform, the Medical Voice Bot, or this portfolio.
- * Nothing is listed because it is "expected" for the role.
+ * Deliberately short. These are the tools Thejas actually works in, not
+ * every dependency that appears in a package file.
  */
 export const skills: SkillGroup[] = [
   {
     category: "Languages",
-    items: ["Python", "TypeScript", "JavaScript", "SQL"],
+    items: ["Python", "JavaScript", "TypeScript", "SQL"],
   },
   {
-    category: "Backend",
-    items: ["FastAPI", "SQLAlchemy", "Alembic", "Pydantic", "REST APIs", "JWT / OAuth2"],
-  },
-  {
-    category: "Data",
-    items: ["PostgreSQL", "MongoDB", "Redis", "Schema design", "Migrations"],
+    category: "Development",
+    items: ["React", "React Native", "Next.js", "FastAPI", "Flask"],
   },
   {
     category: "Testing & automation",
-    items: [
-      "Appium",
-      "Selenium",
-      "pytest",
-      "Real-device testing",
-      "Regression testing",
-      "API validation",
-      "Debugging",
-    ],
+    items: ["Appium", "Selenium", "pytest", "API testing", "Real-device testing"],
+  },
+  {
+    category: "Data",
+    items: ["PostgreSQL", "MongoDB", "MySQL", "SQLAlchemy", "Alembic"],
   },
   {
     category: "AI / ML",
-    items: ["scikit-learn", "NLTK", "pandas", "NumPy"],
-  },
-  {
-    category: "Frontend",
-    items: ["React", "Next.js", "Vite", "Tailwind CSS"],
+    items: ["scikit-learn", "NLTK", "pandas"],
   },
   {
     category: "Tools",
-    items: ["Git", "GitHub", "Docker", "Uvicorn", "AI-assisted development"],
+    items: ["Git", "GitHub", "Docker"],
   },
 ];

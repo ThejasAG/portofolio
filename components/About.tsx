@@ -10,14 +10,14 @@ import SectionReveal from "./SectionReveal";
  * because they are prose, not structured content — edit them in place.
  */
 const paragraphs = [
-  "I work on two sides of the same problem: building backends, and checking that software actually behaves the way it claims to. Most recently that has meant testing the Vya Consumer and Business applications against each other, and building the API and data layer for AgriEco, a farming advisory platform.",
-  "The comparison work is the part I find genuinely interesting. Two applications issue invoices for the same purchase, and the totals agree — until a rounding step happens one stage too early and the VAT line comes out a cent apart. Most invoices match. Finding the ones that do not means reproducing the calculation yourself and knowing which intermediate value to distrust.",
-  "On the backend side I care about how systems fail. AgriEco had to run for weeks before the machine learning models it served existed, so the useful question became what a route should return when the thing it needs is missing. I would rather return a 503 naming the absent file than a stack trace.",
-  "I am working toward backend and quality engineering roles where correctness is checkable — authorisation boundaries, input validation, calculations that have to agree across two applications.",
+  "I'm a software engineering student, currently interning at Xorstack. I build backend services, mobile test automation and AI projects, and I've spent a lot of that time testing real applications rather than only writing them.",
+  "That mix is what I find useful. Writing a feature teaches you how it's meant to work; testing one teaches you how it actually behaves — which is where invoices disagree by a cent, a delivery radius uses a stale map pin, or a test run reports something that never happened on the device.",
+  "Most of my work so far has been in Python and JavaScript: FastAPI and Flask backends, React and React Native front ends, Appium for mobile automation, and scikit-learn for the AI side.",
+  "I'm looking for software engineering roles where I can keep working across both — building things and understanding how they hold up.",
 ];
 
 const currently =
-  "Evaluating real-device and parallel test execution, and where its practical limits actually sit.";
+  "Interning at Xorstack, working on application testing and an internal mobile test orchestration platform.";
 
 export default function About() {
   const S = section("about");

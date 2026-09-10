@@ -13,13 +13,13 @@ export const profile = {
 
   /** Hero positioning statement. Split across lines for the staggered reveal. */
   statement: [
-    "I test consumer and business applications against",
-    "each other, and build the backends underneath them.",
-    "The work I care about is where correctness is checkable.",
+    "I build applications, automation systems and backend services —",
+    "and I enjoy understanding what happens when real software",
+    "meets real users.",
   ],
 
   /** Availability line in the hero. Set to null to hide it entirely. */
-  status: null as string | null, // e.g. "Open to backend / QA engineering roles"
+  status: "Software engineering student — currently interning at Xorstack",
 
   location: "Bengaluru, India",
   email: "thejasag5518@gmail.com",
@@ -38,7 +38,7 @@ export const profile = {
     /** Absolute origin, no trailing slash. Used for canonical/OG/sitemap. */
     siteUrl: "https://example.com", // CONTENT_REQUIRED — your real domain
     description:
-      "Thejas AG — software quality and backend engineering. I validate real applications end to end, from invoice and VAT calculation consistency to API behaviour, and build the services underneath them.",
+      "Thejas AG — software engineering student working on backend services, mobile test automation and AI projects, with hands-on experience testing real applications.",
     twitter: null as string | null,
   },
 } as const;

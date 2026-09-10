@@ -10,6 +10,7 @@ import Experience from "@/components/Experience";
 import Skills from "@/components/Skills";
 import Achievements from "@/components/Achievements";
 import Contact from "@/components/Contact";
+import Hire from "@/components/Hire";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -27,6 +28,7 @@ export default function Home() {
             <Skills />
             <Achievements />
             <Contact />
+            <Hire />
           </>
         )}
       </Shell>

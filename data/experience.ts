@@ -10,35 +10,31 @@ export type Role = {
 };
 
 /**
- * Xorstack is the employer. Vya is a product worked on during that
- * internship, not a company — it lives in data/projects.ts as a case study.
- *
- * The work below is factual; the title, dates and location are the only
- * fields still needed. Commit activity under the work email runs from
- * 2026-07 to 2026-09, but commit dates are not employment dates, so the
- * period is left for you to supply rather than inferred.
+ * Xorstack is the employer. Vya is a product tested during the internship —
+ * not something built here, and not a personal project, so it does not
+ * appear in data/projects.ts.
  */
 export const experience: Role[] = [
   {
     company: "Xorstack",
-    role: "CONTENT_REQUIRED", // your actual internship title
+    role: "Intern",
     period: "CONTENT_REQUIRED", // absolute dates, e.g. "Jun 2026 — Present"
     location: "CONTENT_REQUIRED",
     points: [
-      "Tested the Vya Consumer and Business applications and compared their behaviour and outputs, treating agreement between the two as the correctness condition rather than checking either in isolation.",
-      "Investigated invoice and VAT calculation consistency across different rates, and traced discrepancies to premature per-unit rounding — a case where a correct €8.42 total accompanied a VAT line one cent out.",
-      "Built and maintained a mobile test orchestration platform — FastAPI backend, React dashboard and Appium execution agents — and led the reliability work that stopped runs reporting results which did not match device behaviour.",
-      "Validated application workflows and API responses on real devices, and evaluated parallel execution across multiple applications and devices along with its practical limits.",
+      "Worked on manual testing and validation of the Vya Consumer and Business application workflows, comparing behaviour and output between the two applications rather than checking either in isolation.",
+      "Validated invoices and VAT calculations across different rates, and investigated the cases where the two applications disagreed — tracing one to a per-unit value being rounded a step too early.",
+      "Ran regression and real-device testing across application workflows, and looked at how far multiple applications and devices could be tested in parallel.",
+      "Built and maintained an internal mobile test orchestration platform, including the reliability work that stopped runs reporting results which did not match device behaviour.",
     ],
     technologies: [
+      "Manual testing",
+      "Regression testing",
+      "Real-device testing",
+      "Invoice & VAT validation",
+      "API validation",
       "Python",
       "FastAPI",
       "Appium",
-      "PostgreSQL",
-      "Alembic",
-      "React",
-      "Invoice & VAT validation",
-      "Real-device testing",
       "Git",
     ],
   },

@@ -24,7 +24,7 @@ export default function TechnicalCases() {
       <div className="mx-auto max-w-[1600px]">
         <SectionHeading
           number="—"
-          title="Problems I've solved"
+          title="Problems I've worked through"
           aside="Engineering write-ups"
         />
 

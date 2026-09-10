@@ -43,3 +43,6 @@ next-env.d.ts
 # AI tooling
 AGENTS.md
 CLAUDE.md
+
+# ...but the example is documentation and should be committed.
+!.env.example

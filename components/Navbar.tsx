@@ -66,15 +66,27 @@ export default function Navbar() {
           </motion.div>
 
           <div className="hidden items-center gap-8 md:flex">
-            {sections.map((s) => (
-              <a
-                key={s.id}
-                href={`/#${s.id}`}
-                className="group relative text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-fg)]"
+            {sections
+              .filter((s) => s.id !== "hire")
+              .map((s) => (
+                <a
+                  key={s.id}
+                  href={`/#${s.id}`}
+                  className="group relative text-sm text-[var(--color-muted)] transition-colors hover:text-[var(--color-fg)]"
+                >
+                  <span className="link-underline">{s.label}</span>
+                </a>
+              ))}
+
+            <MagneticButton>
+              <Link
+                href="/#hire"
+                data-cursor="VIEW"
+                className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-fg)] px-5 text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-bg)] transition-opacity hover:opacity-85"
               >
-                <span className="link-underline">{s.label}</span>
-              </a>
-            ))}
+                Hire me
+              </Link>
+            </MagneticButton>
 
             {profile.resume && (
               <MagneticButton>

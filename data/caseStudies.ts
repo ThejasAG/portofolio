@@ -24,67 +24,90 @@ export type TechnicalCase = {
 export const technicalCases: TechnicalCase[] = [
   {
     number: "01",
-    title: "Serving models that did not exist yet",
-    domain: "API design / dependency sequencing",
+    title: "Smarter regression test selection",
+    domain: "Test orchestration — Xorstack",
     problem:
-      "The backend loaded trained model files at import time. While those files were still being produced by another team member, starting the API raised an import error — so the frontend could not develop against it at all.",
+      "Running the full regression suite after every code change is slow, and most of the run has nothing to do with what changed. Narrowing it is only safe if a skipped test can be shown to be unaffected.",
     investigation:
-      "The failure was not really about machine learning. Every route had a hard dependency on an artefact whose arrival date nobody controlled, and that dependency was being resolved at the worst possible moment: process startup, where one missing file takes down all seven route modules including the ones that need no model.",
+      "The question is not \u201cwhich tests are slow\u201d but \u201cwhich tests could this change possibly break\u201d. That turns into a dependency problem: resolve the changed files into the modules that depend on them, then find the scenarios whose coverage touches those modules.",
     approach:
-      "I moved every loader behind a lazy, cached accessor that returns None when the file is absent, and made each route convert that None into a 503 naming the exact path it is waiting for. A health endpoint reports which models have landed. The absence of a dependency became a runtime state the API reports, rather than a crash.",
+      "Changed files are resolved through a dependency graph into a deterministic set of affected modules, and only scenarios declaring coverage of those modules are selected. A scenario with no coverage tags cannot be judged, so it runs anyway and is flagged \u2014 selection stays sound rather than optimistic.",
     result:
-      "The service and its generated documentation ran correctly against an empty models directory, so frontend and backend work continued in parallel instead of queueing behind the ML work.",
-    flow: [
-      "Request",
-      "Lazy loader",
-      "Model present?",
-      "Predict / 503 with path",
-    ],
+      "A change runs a targeted set of tests instead of the whole suite, and the run reports what was skipped rather than hiding it.",
+    flow: ["Changed files", "Dependency graph", "Affected modules", "Selected scenarios"],
   },
   {
     number: "02",
-    title: "Proving one account cannot reach another's data",
-    domain: "Authorisation / test design",
+    title: "Reliable mobile test orchestration",
+    domain: "Test orchestration — Xorstack",
     problem:
-      "Farms, soil records and crop sessions all hang off a farmer id. Any endpoint that took a farm_id from the request body could be pointed at another farmer's farm unless every handler remembered to check ownership.",
+      "Runs were reporting outcomes that did not match what happened on the device. A suite that reports the wrong answer is worse than no suite: it costs the team time and teaches them to ignore failures.",
     investigation:
-      "Per-handler checks are the kind of thing that holds until the day someone adds an eighth route and forgets. The safer place for the rule is the lookup itself, where every caller has to go through it — and the only way to know it holds is a test that actively tries to break it.",
+      "The causes were infrastructural rather than in the tests: agents reaching past the API, device resolution that assumed one machine, processes that outlived their run, and a schema Alembic did not really own.",
     approach:
-      "I scoped the farm lookup by farmer id so a mismatched owner returns nothing, and made the routes translate that into a 404 rather than a 403 — a stranger's record should not be confirmed to exist. The smoke test registers a second account and asserts it receives 404 when writing against the first account's farm.",
+      "Put the agents behind the backend API so one place decides what a run may do; made device resolution machine-aware so an agent only allocates devices on its own host; gave runs a real process lifecycle with device reservation; and made Alembic authoritative over the schema.",
     result:
-      "Ownership is enforced in one function rather than repeated across route handlers, and the boundary is covered by an assertion that fails if a future change weakens it.",
-    flow: ["Token", "Resolve farmer", "Scoped lookup", "404 if not owner"],
+      "Runs report what actually happened on the device, two runs cannot claim the same device, and a fresh machine rebuilds its database from migrations.",
   },
   {
     number: "03",
-    title: "A correct total with the wrong VAT",
-    domain: "Invoice correctness / cross-application QA",
+    title: "Cross-application VAT calculation inconsistency",
+    domain: "Application testing — Xorstack",
     problem:
-      "Invoices for the same purchase are produced by both the Vya Consumer and Business applications. Their VAT lines needed to agree exactly. Most did — but some combinations of quantity and rate did not.",
+      "The Vya Consumer and Business applications each produce invoices for the same purchase, and their VAT lines have to agree exactly. Most comparisons matched \u2014 the work was isolating the ones that did not and understanding why.",
     investigation:
-      "Take Jever Fun ×2 at 25% VAT. The invoice total of €8.42 was correct, which is what makes the case interesting: the headline figure gives nothing away. Rounding the per-unit excluding-VAT price before multiplying gives €3.69 × 2 = €7.38, and that carries through to VAT of €1.04 instead of €1.03. The cent is lost at the rounding step, not in the rate.",
+      "Take Jever Fun \u00d72 at 25% VAT. The invoice total of \u20ac8.42 was correct, which is what makes it interesting: the headline figure gives nothing away. Rounding the per-unit excluding-VAT price before multiplying gives \u20ac3.69 \u00d7 2 = \u20ac7.38, and that carries through to VAT of \u20ac1.04 instead of \u20ac1.03.",
     approach:
-      "I recomputed the expected values by hand rather than treating either application as the reference, and compared invoices across different VAT rates to separate a rounding-order problem from a rate-handling one. The comparisons were re-run as regression checks, since rounding behaviour is easy to disturb.",
+      "I recomputed the expected values by hand rather than treating either application as the reference, and compared invoices across different VAT rates to separate a rounding-order problem from a rate-handling one. The comparisons were re-run as regression checks.",
     result:
-      "The inconsistency was traced to premature per-unit rounding rather than a difference in rates or pricing, with a concrete worked case showing how a correct total can sit alongside an incorrect tax line.",
+      "The inconsistency was traced to premature per-unit rounding rather than a difference in rates or pricing, with a worked case showing how a correct total can accompany an incorrect tax line.",
     flow: [
       "Unit price excl. VAT",
       "Round per unit",
-      "× quantity = €7.38",
-      "VAT €1.04 ≠ €1.03",
+      "\u00d7 quantity = \u20ac7.38",
+      "VAT \u20ac1.04 \u2260 \u20ac1.03",
     ],
   },
   {
     number: "04",
-    title: "How far parallel device testing actually goes",
-    domain: "Test execution / device coverage",
+    title: "Delivery-distance calculation and location updates",
+    domain: "Food delivery application",
     problem:
-      "Two applications, multiple devices, and validation that has to happen on real hardware rather than emulators — running that sequentially costs time that grows with every device added to the matrix.",
+      "Whether a restaurant delivers to an address depends on the distance between two points. The delivery range was not behaving correctly when the selected map location changed.",
     investigation:
-      "I evaluated running multiple applications and devices simultaneously, and where that stops being practical. Parallel execution is not free: the constraint is not only how many devices are available but whether concurrent runs stay independent enough for a failure to still mean something.",
+      "I followed the flow end to end: the pin dropped on the map, the address resolved from it, the coordinates stored for the user and the restaurant, and the distance computed from those. Coordinates arriving as strings rather than numbers, or a distance computed from a stale pin, both produce a plausible-looking wrong answer.",
     approach:
-      "Assessed real-device execution against the coverage it actually buys, and treated the practical limits of parallelism as a finding in their own right rather than a target to maximise.",
+      "Validated the coordinates on both sides, made the distance function coerce its inputs to numbers and return infinity when any coordinate is missing rather than throwing, and made sure the distance recomputes when the pin moves. The Haversine result is then compared against the restaurant's configured maximum radius.",
     result:
-      "CONTENT_REQUIRED — what you concluded about where parallel execution was and was not worth using.",
+      "Delivery range is decided from the currently selected location, and a missing coordinate fails closed \u2014 out of range \u2014 instead of erroring or silently passing.",
+    flow: ["Map pin", "Coordinates", "Haversine distance", "Compare to radius"],
+  },
+  {
+    number: "05",
+    title: "Backend that runs before its dependencies exist",
+    domain: "AgriEco — academic project",
+    problem:
+      "The backend loaded trained model files at import time. While those files were still being produced by another team member, starting the API raised an import error, so the frontend could not develop against it at all.",
+    investigation:
+      "The problem was not machine learning. Every route had a hard dependency on an artefact whose arrival nobody controlled, resolved at the worst moment: process startup, where one missing file takes down all seven route modules including those needing no model.",
+    approach:
+      "Moved every loader behind a lazy accessor returning None when the file is absent, and made each route convert that into a 503 naming the exact path it is waiting for. A health endpoint reports which models have landed.",
+    result:
+      "The service and its documentation ran correctly against an empty models directory, so frontend and backend work continued in parallel instead of queueing behind the ML work.",
+    flow: ["Request", "Lazy loader", "Model present?", "Predict / 503 with path"],
+  },
+  {
+    number: "06",
+    title: "Proving one account cannot reach another's data",
+    domain: "AgriEco — academic project",
+    problem:
+      "Farms, soil records and crop sessions all hang off a farmer id. Any endpoint taking a farm_id from the request body could be pointed at another farmer's farm unless every handler remembered to check ownership.",
+    investigation:
+      "Per-handler checks hold until someone adds an eighth route and forgets. The safer place for the rule is the lookup itself, which every caller must go through \u2014 and the only way to know it holds is a test that tries to break it.",
+    approach:
+      "Scoped the farm lookup by farmer id so a mismatched owner returns nothing, and had routes translate that into a 404 rather than a 403 \u2014 a stranger's record should not be confirmed to exist. The test registers a second account and asserts it gets 404 writing against the first account's farm.",
+    result:
+      "Ownership is enforced in one function instead of repeated across handlers, covered by an assertion that fails if a later change weakens it.",
+    flow: ["Token", "Resolve farmer", "Scoped lookup", "404 if not owner"],
   },
 ];
