@@ -2,11 +2,11 @@
 
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
-import { EASE, viewport } from "@/lib/motion";
+import { EASE, EASE_SPRING, viewport } from "@/lib/motion";
 import { usePrefersReducedMotion } from "@/lib/useReducedMotion";
 
 /**
- * A line of type that rises from behind a clip.
+ * A line of type that rises from behind a clip with a spring overshoot.
  *
  * The animation is driven from the MASK, not the moving child: the child
  * starts translated fully outside the mask's overflow:hidden box, so an
@@ -19,10 +19,13 @@ export default function MaskReveal({
   children,
   delay = 0,
   className = "",
+  spring = false,
 }: {
   children: ReactNode;
   delay?: number;
   className?: string;
+  /** Use spring physics for a subtle overshoot on completion. */
+  spring?: boolean;
 }) {
   const reduced = usePrefersReducedMotion();
 
@@ -44,7 +47,11 @@ export default function MaskReveal({
       <motion.span
         className="block"
         variants={{ hidden: { y: "110%" }, show: { y: 0 } }}
-        transition={{ duration: 0.9, ease: EASE, delay }}
+        transition={
+          spring
+            ? { duration: 1.05, ease: EASE_SPRING, delay }
+            : { duration: 0.92, ease: EASE, delay }
+        }
       >
         {children}
       </motion.span>

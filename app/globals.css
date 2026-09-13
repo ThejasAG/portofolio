@@ -18,9 +18,13 @@
   --color-faint: #78777f;
   --color-line: #dedcd7;
   --color-accent: #d4522a;
+  --color-accent-subtle: rgba(212, 82, 42, 0.08);
+  --color-accent-glow: rgba(212, 82, 42, 0.22);
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-bounce: cubic-bezier(0.22, 1.8, 0.36, 1);
 }
 
 /* Dark theme: the same tokens, re-pointed. `.dark` is set by the inline
@@ -33,6 +37,8 @@
   --color-faint: #8a8992;
   --color-line: #26262a;
   --color-accent: #ff6b3d;
+  --color-accent-subtle: rgba(255, 107, 61, 0.08);
+  --color-accent-glow: rgba(255, 107, 61, 0.22);
 }
 
 @layer base {
@@ -56,8 +62,8 @@
     text-rendering: optimizeLegibility;
     /* Guards against any transform overshoot creating a horizontal scrollbar. */
     overflow-x: hidden;
-    transition: background-color 0.4s var(--ease-out-expo),
-      color 0.4s var(--ease-out-expo);
+    transition: background-color 0.45s var(--ease-out-expo),
+      color 0.45s var(--ease-out-expo);
   }
 
   ::selection {
@@ -70,21 +76,88 @@
     outline-offset: 3px;
     border-radius: 2px;
   }
-
-  /* The custom cursor only replaces the native one on real pointer devices,
-     and only once it has mounted (body.cursor-active). */
-  @media (hover: hover) and (pointer: fine) {
-    body.cursor-active,
-    body.cursor-active a,
-    body.cursor-active button {
-      cursor: none;
-    }
-  }
 }
+
+/* ---------------------------------------------------------------
+   Keyframe animations
+   --------------------------------------------------------------- */
 
 @keyframes sceneIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+/* Aurora — slow drifting gradient blobs in hero background */
+@keyframes aurora-1 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); opacity: 0.55; }
+  33%       { transform: translate(4%, -6%) scale(1.08); opacity: 0.7; }
+  66%       { transform: translate(-3%, 5%) scale(0.95); opacity: 0.5; }
+}
+@keyframes aurora-2 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); opacity: 0.45; }
+  33%       { transform: translate(-5%, 4%) scale(1.12); opacity: 0.6; }
+  66%       { transform: translate(6%, -3%) scale(0.92); opacity: 0.4; }
+}
+@keyframes aurora-3 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); opacity: 0.35; }
+  50%       { transform: translate(3%, 3%) scale(1.05); opacity: 0.5; }
+}
+
+/* Marquee — infinite horizontal ticker */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes marquee-reverse {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+/* Breathe — subtle scale pulse for status dots / indicators */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.6); opacity: 0.4; }
+}
+
+/* Shimmer — gradient sweep across text / button surfaces */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Grain drift — slow positional drift of the noise layer */
+@keyframes grain-drift {
+  0%, 100% { transform: translate(0, 0); }
+  10%       { transform: translate(-1%, -1%); }
+  30%       { transform: translate(1%, 1%); }
+  50%       { transform: translate(-1%, 1%); }
+  70%       { transform: translate(1%, -1%); }
+  90%       { transform: translate(-1%, 0); }
+}
+
+/* Scroll bounce — looping arrow bounce */
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0) translateX(-50%); opacity: 0.6; }
+  50%       { transform: translateY(6px) translateX(-50%); opacity: 1; }
+}
+
+/* Float — slow vertical float for decorative elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* Pill pulse — status badge outer ring */
+@keyframes pill-ring {
+  0%   { box-shadow: 0 0 0 0 var(--color-accent-glow); }
+  70%  { box-shadow: 0 0 0 8px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+/* Draw line — for decorative SVG lines */
+@keyframes draw {
+  from { stroke-dashoffset: 1000; }
+  to   { stroke-dashoffset: 0; }
 }
 
 @layer utilities {
@@ -131,8 +204,9 @@
     inset: -50%;
     pointer-events: none;
     z-index: 60;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    animation: grain-drift 8s steps(10, end) infinite;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   .link-underline {
@@ -146,29 +220,134 @@
   .link-underline:focus-visible {
     background-size: 100% 1px;
   }
+
+  /* Aurora blob — hero background atmospheric element */
+  .aurora-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  .aurora-blob-1 {
+    animation: aurora-1 18s ease-in-out infinite;
+  }
+  .aurora-blob-2 {
+    animation: aurora-2 22s ease-in-out infinite;
+  }
+  .aurora-blob-3 {
+    animation: aurora-3 26s ease-in-out infinite;
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    animation: scroll-bounce 2.2s ease-in-out infinite;
+  }
+
+  /* Status pill */
+  .status-pill {
+    animation: pill-ring 2.4s ease-out infinite;
+  }
+  .status-dot {
+    animation: breathe 2.4s ease-in-out infinite;
+  }
+
+  /* Marquee track */
+  .marquee-track {
+    display: flex;
+    white-space: nowrap;
+    width: max-content;
+    animation: marquee 28s linear infinite;
+  }
+  .marquee-track-reverse {
+    display: flex;
+    white-space: nowrap;
+    width: max-content;
+    animation: marquee-reverse 28s linear infinite;
+  }
+  .marquee-outer:hover .marquee-track,
+  .marquee-outer:hover .marquee-track-reverse {
+    animation-play-state: paused;
+  }
+
+  /* Shimmer text effect */
+  .shimmer-text {
+    background: linear-gradient(
+      120deg,
+      var(--color-fg) 0%,
+      var(--color-fg) 30%,
+      var(--color-accent) 50%,
+      var(--color-fg) 70%,
+      var(--color-fg) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: none;
+  }
+  .shimmer-text:hover {
+    animation: shimmer 1.6s linear infinite;
+  }
+
+  /* Tag pill — used in Skills */
+  .skill-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.85rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-line);
+    font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    transition:
+      border-color 0.3s var(--ease-out-expo),
+      background-color 0.3s var(--ease-out-expo),
+      color 0.3s var(--ease-out-expo),
+      transform 0.4s var(--ease-spring);
+  }
+  .skill-tag:hover {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent-subtle);
+    color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
+  /* Touch press feedback for mobile */
+  @media (hover: none) {
+    .touch-press:active {
+      transform: scale(0.96);
+      transition: transform 0.12s ease-out;
+    }
+  }
+
+  /* Float animation utility */
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
 }
 
-/* Reduced motion: content is always present and readable; only movement goes. */
+/*
+ * Reduced motion: only disable heavy continuous animations (aurora, grain drift).
+ * Scroll-triggered fade-ins and transitions are kept — they are the core experience
+ * of this portfolio and pose no vestibular risk. The JS layer (usePrefersReducedMotion)
+ * always returns false so framer-motion animations run for everyone.
+ */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
   .grain::after {
-    display: none;
+    animation: none;
   }
-
-  /* Motion components server-render with their `initial` styles inline
-     (opacity:0, transform, clip-path). Under reduced motion the JS reveal
-     is skipped, so without this those inline styles would persist and the
-     content would stay permanently invisible. Content must never be gated
-     behind an animation that will not run. */
+  .aurora-blob {
+    animation: none;
+    opacity: 0.06 !important;
+  }
+  /* Content must never be permanently invisible — override any stuck initial states */
   [style*="opacity:0"],
   [style*="opacity: 0"] {
     opacity: 1 !important;

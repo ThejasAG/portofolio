@@ -32,7 +32,7 @@ export const profile = {
    * Set to "/resume.pdf" only after placing the real file at public/resume.pdf.
    * While null, the resume buttons render disabled with a visible note.
    */
-  resume: null as string | null,
+  resume: "/resume.pdf" as string | null,
 
   seo: {
     /** Absolute origin, no trailing slash. Used for canonical/OG/sitemap. */

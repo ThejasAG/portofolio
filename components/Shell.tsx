@@ -1,14 +1,15 @@
 "use client";
 
-import { useCallback, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import LoadingScreen from "./LoadingScreen";
 import Navbar from "./Navbar";
-import Cursor from "./Cursor";
 
 /**
- * Client shell around otherwise static content: intro overlay, nav, cursor.
- * `ready` is passed down so the hero starts its choreography as the
- * loading overlay lifts, rather than underneath it.
+ * Client shell. LoadingScreen manages its own visibility and exit animation;
+ * it calls onDone() at the right moment so the hero begins revealing.
+ *
+ * Failsafe: if onDone is never called within 4 s (e.g. reduced-motion skip
+ * or any error), we forcibly set ready=true so the page is never permanently hidden.
  */
 export default function Shell({
   children,
@@ -16,14 +17,17 @@ export default function Shell({
   children: (ready: boolean) => ReactNode;
 }) {
   const [ready, setReady] = useState(false);
-  // Stable identity: LoadingScreen's rAF effect depends on this, and must
-  // not restart when the tree re-renders.
   const handleDone = useCallback(() => setReady(true), []);
+
+  // Hard failsafe — content should never be permanently hidden
+  useEffect(() => {
+    const t = setTimeout(() => setReady(true), 4000);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <>
       <LoadingScreen onDone={handleDone} />
-      <Cursor />
       <Navbar />
       <main id="main">{children(ready)}</main>
     </>

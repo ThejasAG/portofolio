@@ -8,16 +8,15 @@ import { profile, isPlaceholder } from "@/data/profile";
 import { sections } from "@/data/sections";
 import ThemeToggle from "./ThemeToggle";
 import MagneticButton from "./MagneticButton";
+import { drawerItem } from "@/lib/motion";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { scrollY } = useScroll();
 
-  // Motion value subscription: no React re-render per scroll frame.
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 40));
 
-  // The mobile sheet is a modal surface — lock the page behind it.
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -35,26 +34,23 @@ export default function Navbar() {
 
   return (
     <>
-      <motion.header
-        className="fixed inset-x-0 top-0 z-50"
-        animate={{
-          backgroundColor: scrolled
-            ? "color-mix(in srgb, var(--color-bg) 82%, transparent)"
-            : "color-mix(in srgb, var(--color-bg) 0%, transparent)",
-          borderBottomColor: scrolled
-            ? "var(--color-line)"
-            : "color-mix(in srgb, var(--color-line) 0%, transparent)",
-          backdropFilter: scrolled ? "blur(12px)" : "blur(0px)",
-        }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        style={{ borderBottomWidth: 1, borderBottomStyle: "solid" }}
+      <header
+        className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${
+          scrolled
+            ? "border-[var(--color-line)] bg-[var(--color-bg)]/85 backdrop-blur-[14px]"
+            : "border-transparent bg-transparent backdrop-blur-none"
+        }`}
+        style={{ borderBottomStyle: "solid" }}
       >
         <nav
           aria-label="Primary"
           className="mx-auto flex max-w-[1600px] items-center justify-between px-6 sm:px-10"
         >
           <motion.div
-            animate={{ paddingTop: scrolled ? 14 : 24, paddingBottom: scrolled ? 14 : 24 }}
+            animate={{
+              paddingTop: scrolled ? 14 : 24,
+              paddingBottom: scrolled ? 14 : 24,
+            }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
             <Link
@@ -65,6 +61,7 @@ export default function Navbar() {
             </Link>
           </motion.div>
 
+          {/* Desktop nav */}
           <div className="hidden items-center gap-8 md:flex">
             {sections
               .filter((s) => s.id !== "hire")
@@ -105,83 +102,130 @@ export default function Navbar() {
             <ThemeToggle />
           </div>
 
+          {/* Mobile controls */}
           <div className="flex items-center gap-1 md:hidden">
             <ThemeToggle />
-            <button
+            <motion.button
               type="button"
               onClick={() => setOpen(true)}
               aria-label="Open menu"
               aria-expanded={open}
               className="grid h-11 w-11 place-items-center"
+              whileTap={{ scale: 0.9 }}
             >
               <Menu size={18} strokeWidth={1.5} />
-            </button>
+            </motion.button>
           </div>
         </nav>
-      </motion.header>
+      </header>
 
+      {/* ── Full-screen mobile drawer ── */}
       <AnimatePresence>
         {open && (
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Menu"
-            className="fixed inset-0 z-[70] flex flex-col bg-[var(--color-bg)] px-6 py-6 md:hidden"
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">{nameLabel}</span>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                aria-label="Close menu"
-                className="grid h-11 w-11 place-items-center"
-              >
-                <X size={18} strokeWidth={1.5} />
-              </button>
-            </div>
+          <>
+            {/* Backdrop */}
+            <motion.div
+              key="backdrop"
+              className="fixed inset-0 z-[65] bg-[var(--color-bg)]/60 backdrop-blur-sm md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={() => setOpen(false)}
+            />
 
-            <ul className="mt-16 flex flex-col gap-2">
-              {sections.map((s, i) => (
-                <motion.li
-                  key={s.id}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.06 + i * 0.05, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            {/* Drawer panel — slides from right */}
+            <motion.div
+              key="drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Menu"
+              className="fixed inset-y-0 right-0 z-[70] flex w-full max-w-sm flex-col bg-[var(--color-bg)] px-6 py-6 md:hidden"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {/* Decorative accent blob inside drawer */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full opacity-20"
+                style={{
+                  background:
+                    "radial-gradient(circle, var(--color-accent) 0%, transparent 70%)",
+                  filter: "blur(40px)",
+                }}
+              />
+
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">{nameLabel}</span>
+                <motion.button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  aria-label="Close menu"
+                  className="grid h-11 w-11 place-items-center"
+                  whileTap={{ scale: 0.9, rotate: 90 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <a
-                    href={`/#${s.id}`}
-                    onClick={() => setOpen(false)}
-                    className="flex items-baseline gap-4 py-3 text-4xl font-medium tracking-tight"
-                  >
-                    <span className="text-meta">{s.number}</span>
-                    {s.label}
-                  </a>
-                </motion.li>
-              ))}
-            </ul>
+                  <X size={18} strokeWidth={1.5} />
+                </motion.button>
+              </div>
 
-            <div className="mt-auto flex flex-wrap gap-x-6 gap-y-2 border-t border-[var(--color-line)] pt-6">
-              {profile.github && (
-                <a href={profile.github} target="_blank" rel="noreferrer" className="text-meta py-2">
-                  GitHub
-                </a>
-              )}
-              {profile.linkedin && (
-                <a href={profile.linkedin} target="_blank" rel="noreferrer" className="text-meta py-2">
-                  LinkedIn
-                </a>
-              )}
-              {profile.resume && (
-                <a href={profile.resume} target="_blank" rel="noreferrer" className="text-meta py-2">
-                  Resume
-                </a>
-              )}
-            </div>
-          </motion.div>
+              <ul className="mt-12 flex flex-col gap-1">
+                {sections.map((s, i) => (
+                  <motion.li
+                    key={s.id}
+                    variants={drawerItem}
+                    custom={i}
+                    initial="hidden"
+                    animate="show"
+                  >
+                    <a
+                      href={`/#${s.id}`}
+                      onClick={() => setOpen(false)}
+                      className="touch-press flex items-baseline gap-4 rounded-lg py-3 text-4xl font-medium tracking-tight transition-colors hover:text-[var(--color-accent)]"
+                    >
+                      <span className="text-meta">{s.number}</span>
+                      {s.label}
+                    </a>
+                  </motion.li>
+                ))}
+              </ul>
+
+              <div className="mt-auto flex flex-wrap gap-x-6 gap-y-2 border-t border-[var(--color-line)] pt-6">
+                {profile.github && (
+                  <a
+                    href={profile.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-meta py-2 transition-colors hover:text-[var(--color-fg)]"
+                  >
+                    GitHub
+                  </a>
+                )}
+                {profile.linkedin && (
+                  <a
+                    href={profile.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-meta py-2 transition-colors hover:text-[var(--color-fg)]"
+                  >
+                    LinkedIn
+                  </a>
+                )}
+                {profile.resume && (
+                  <a
+                    href={profile.resume}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-meta py-2 transition-colors hover:text-[var(--color-fg)]"
+                  >
+                    Resume
+                  </a>
+                )}
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

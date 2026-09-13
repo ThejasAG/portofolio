@@ -5,6 +5,7 @@ import { profile, isPlaceholder } from "@/data/profile";
 import MagneticButton from "./MagneticButton";
 import MaskReveal from "./MaskReveal";
 import { section } from "@/data/sections";
+import SectionReveal from "./SectionReveal";
 
 /** Edit this closing line — it should sound like you. */
 const CLOSING = ["Let's build", "something", "that holds."];
@@ -29,16 +30,26 @@ export default function Contact() {
           <span className="text-meta">{profile.location}</span>
         </div>
 
-        <h2 className="mt-16 text-[clamp(2.5rem,11vw,9rem)] font-medium leading-[0.88] tracking-[-0.05em]">
+        {/* Large closing headline */}
+        <h2 className="relative mt-16 text-[clamp(2.5rem,11vw,9rem)] font-medium leading-[0.88] tracking-[-0.05em]">
+          {/* Decorative faint watermark */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -right-2 top-1/2 -translate-y-1/2 select-none font-medium leading-none tracking-[-0.06em] text-[var(--color-line)]"
+            style={{ fontSize: "clamp(6rem,22vw,18rem)", opacity: 0.25 }}
+          >
+            TA
+          </span>
           {CLOSING.map((line, i) => (
-            <MaskReveal key={line} delay={i * 0.08}>
+            <MaskReveal key={line} delay={i * 0.09}>
               {line}
             </MaskReveal>
           ))}
         </h2>
 
         <div className="mt-20 grid gap-12 border-t border-[var(--color-line)] pt-10 lg:grid-cols-12">
-          <div className="lg:col-span-7">
+          {/* Email */}
+          <SectionReveal className="lg:col-span-7">
             <p className="text-meta">Email</p>
             {emailReady ? (
               <MagneticButton strength={6}>
@@ -47,7 +58,7 @@ export default function Contact() {
                   data-cursor="↗"
                   className="group mt-4 inline-flex items-center gap-3 text-[clamp(1.35rem,4vw,3rem)] font-medium tracking-[-0.035em]"
                 >
-                  <span className="link-underline">{profile.email}</span>
+                  <span className="shimmer-text link-underline">{profile.email}</span>
                   <ArrowUpRight
                     size={28}
                     strokeWidth={1.5}
@@ -60,27 +71,30 @@ export default function Contact() {
                 {profile.email}
               </p>
             )}
-          </div>
+          </SectionReveal>
 
-          <div className="lg:col-span-4 lg:col-start-9">
+          {/* Links */}
+          <SectionReveal delay={1} className="lg:col-span-4 lg:col-start-9">
             <p className="text-meta">Elsewhere</p>
             <ul className="mt-4 flex flex-col">
               {links.map((l) => (
                 <li key={l.label} className="border-b border-[var(--color-line)]">
-                  <a
-                    href={l.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    data-cursor="↗"
-                    className="group flex min-h-11 items-center justify-between py-3 text-base"
-                  >
-                    <span className="link-underline">{l.label}</span>
-                    <ArrowUpRight
-                      size={16}
-                      strokeWidth={1.5}
-                      className="text-[var(--color-muted)] transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
-                    />
-                  </a>
+                  <MagneticButton strength={3}>
+                    <a
+                      href={l.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      data-cursor="↗"
+                      className="touch-press group flex min-h-11 items-center justify-between py-3 text-base"
+                    >
+                      <span className="link-underline">{l.label}</span>
+                      <ArrowUpRight
+                        size={16}
+                        strokeWidth={1.5}
+                        className="text-[var(--color-muted)] transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+                      />
+                    </a>
+                  </MagneticButton>
                 </li>
               ))}
               {links.length === 0 && (
@@ -89,7 +103,7 @@ export default function Contact() {
                 </li>
               )}
             </ul>
-          </div>
+          </SectionReveal>
         </div>
       </div>
     </section>

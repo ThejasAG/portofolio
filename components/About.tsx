@@ -4,6 +4,7 @@ import { profile } from "@/data/profile";
 import SectionHeading from "./SectionHeading";
 import { section } from "@/data/sections";
 import SectionReveal from "./SectionReveal";
+import MaskReveal from "./MaskReveal";
 
 /**
  * Editorial About. Paragraphs live here rather than in the data layer
@@ -30,7 +31,7 @@ export default function About() {
           <div className="lg:col-span-7 lg:col-start-4">
             <div className="flex flex-col gap-7">
               {paragraphs.map((p, i) => (
-                <SectionReveal key={i} delay={i}>
+                <SectionReveal key={i} delay={i * 0.5}>
                   <p
                     className={
                       i === 0

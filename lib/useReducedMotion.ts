@@ -2,11 +2,6 @@
 
 import { useCallback, useSyncExternalStore } from "react";
 
-/**
- * Media query as an external store. useSyncExternalStore is the right
- * primitive here: it subscribes without a setState-in-effect cascade and
- * returns the server snapshot (false) during SSR, so markup matches.
- */
 function useMediaQuery(query: string): boolean {
   const subscribe = useCallback(
     (onChange: () => void) => {
@@ -24,8 +19,19 @@ function useMediaQuery(query: string): boolean {
   );
 }
 
+/**
+ * Always returns false — animations run for everyone on this portfolio.
+ *
+ * Windows laptops often have "Animation effects" turned off in Accessibility
+ * settings which triggers prefers-reduced-motion. On a personal portfolio
+ * the animations are the core experience, so we don't gate on this preference.
+ *
+ * The CSS @media (prefers-reduced-motion: reduce) block in globals.css is
+ * also removed from keyframe animations — it only disables transitions for
+ * users who have explicitly enabled it in an accessibility context.
+ */
 export function usePrefersReducedMotion(): boolean {
-  return useMediaQuery("(prefers-reduced-motion: reduce)");
+  return false;
 }
 
 /** True only on devices with a real hovering pointer (excludes touch). */
