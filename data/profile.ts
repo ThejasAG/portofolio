@@ -36,7 +36,7 @@ export const profile = {
 
   seo: {
     /** Absolute origin, no trailing slash. Used for canonical/OG/sitemap. */
-    siteUrl: "https://example.com", // CONTENT_REQUIRED — your real domain
+    siteUrl: "https://portfolio-chi-lilac-eafxya59u1.vercel.app",
     description:
       "Thejas AG — software engineering student working on backend services, mobile test automation and AI projects, with hands-on experience testing real applications.",
     twitter: null as string | null,

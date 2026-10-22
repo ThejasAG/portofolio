@@ -17,9 +17,9 @@ export type Role = {
 export const experience: Role[] = [
   {
     company: "Xorstack",
-    role: "Intern",
-    period: "CONTENT_REQUIRED", // absolute dates, e.g. "Jun 2026 — Present"
-    location: "CONTENT_REQUIRED",
+    role: "Software Development Intern",
+    period: "Ongoing",
+    location: "Bengaluru, India (on-site)",
     points: [
       "Worked on manual testing and validation of the Vya Consumer and Business application workflows, comparing behaviour and output between the two applications rather than checking either in isolation.",
       "Validated invoices and VAT calculations across different rates, and investigated the cases where the two applications disagreed — tracing one to a per-unit value being rounded a step too early.",
@@ -44,7 +44,7 @@ export const education: Role[] = [
   {
     company: "Dr. Ambedkar Institute of Technology, Bengaluru",
     role: "B.E. — Artificial Intelligence & Machine Learning",
-    period: "CONTENT_REQUIRED", // e.g. "2022 — 2026"
+    period: "2023 — 2027",
     location: "Bengaluru, India",
     points: [],
     technologies: [],
