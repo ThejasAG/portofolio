@@ -74,7 +74,12 @@ async function githubRequest(pathname: string, token: string, init?: RequestInit
     },
   });
   if (!response.ok) {
-    throw new Error(`GitHub API ${response.status}: ${await response.text()}`);
+    const detail = await response.text();
+    let message = detail;
+    try {
+      message = (JSON.parse(detail) as { message?: string }).message || detail;
+    } catch {}
+    throw new Error(`GitHub API ${response.status}: ${message}`);
   }
   return response.json();
 }
@@ -191,8 +196,12 @@ export async function POST(request: Request) {
     }
   } catch (error) {
     console.error("admin content: publish failed", error);
+    const detail =
+      error instanceof Error && error.message.startsWith("GitHub API ")
+        ? error.message
+        : "Could not reach GitHub.";
     return NextResponse.json(
-      { error: "Could not publish the changes. Check server logs and GitHub settings." },
+      { error: `Could not publish: ${detail}` },
       { status: 502 }
     );
   }
