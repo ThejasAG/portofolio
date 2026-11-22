@@ -1,0 +1,21 @@
+{
+  "name": "Thejas AG",
+  "initials": "TA",
+  "title": "Software Quality / Backend Engineering",
+  "statement": [
+    "I build applications, automation systems and backend services,",
+    "and I enjoy understanding what happens when real software",
+    "meets real users."
+  ],
+  "status": "Software engineering student — EX at Xorstack",
+  "location": "Bengaluru, India",
+  "email": "thejasag5518@gmail.com",
+  "github": "https://github.com/ThejasAG",
+  "linkedin": "https://www.linkedin.com/in/thejas-ag-26385b321/",
+  "resume": "/resume.pdf",
+  "seo": {
+    "siteUrl": "https://portfolio-chi-lilac-eafxya59u1.vercel.app",
+    "description": "Thejas AG — software engineering student working on backend services, mobile test automation and AI projects, with hands-on experience testing real applications.",
+    "twitter": null
+  }
+}
