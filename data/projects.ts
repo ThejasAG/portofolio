@@ -1,3 +1,5 @@
+import projectEdits from "./projects-content.json";
+
 export type Project = {
   slug: string;
   number: string;
@@ -48,7 +50,7 @@ export type Project = {
  *
  * Repository URLs come from the actual git remotes — none are guessed.
  */
-export const projects: Project[] = [
+const baseProjects: Project[] = [
   {
     slug: "automation-platform",
     diagram: "automation-platform",
@@ -258,6 +260,30 @@ export const projects: Project[] = [
     },
   },
 ];
+
+type ProjectEdits = Partial<Record<string, Partial<Project>>>;
+
+export function applyProjectEdits(
+  base: Project[],
+  edits: ProjectEdits
+): Project[] {
+  return base.map((project) => {
+    const edit = edits[project.slug];
+    if (!edit) return project;
+    return {
+      ...project,
+      ...edit,
+      study: edit.study ?? project.study,
+    };
+  });
+}
+
+export { baseProjects };
+
+export const projects = applyProjectEdits(
+  baseProjects,
+  projectEdits as ProjectEdits
+);
 
 export const featuredProjects = projects.filter((p) => p.featured);
 export const caseStudies = projects.filter((p) => p.caseStudy && p.study);

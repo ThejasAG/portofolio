@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ExternalLink, LogOut, Save } from "lucide-react";
+import type { Project } from "@/data/projects";
 
 type Content = {
   name: string;
@@ -20,6 +21,7 @@ type Content = {
     description: string;
     twitter: string | null;
   };
+  projects: Project[];
 };
 
 const field =
@@ -30,6 +32,8 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [content, setContent] = useState<Content | null>(null);
   const [resumeFile, setResumeFile] = useState<{ name: string; base64: string } | null>(null);
+  const [activeTab, setActiveTab] = useState<"profile" | "projects">("profile");
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -47,7 +51,10 @@ export default function AdminPage() {
         if (!res.ok) throw new Error("Could not load content.");
         return res.json();
       })
-      .then(setContent)
+      .then((data: Content) => {
+        setContent(data);
+        setSelectedProject(data.projects[0]?.slug ?? null);
+      })
       .catch((error) => setMessage(error.message));
   }, [authenticated]);
 
@@ -84,6 +91,42 @@ export default function AdminPage() {
   ) {
     setContent((current) =>
       current ? { ...current, seo: { ...current.seo, [key]: value } } : current
+    );
+  }
+
+  function setProjectField<K extends keyof Project>(
+    slug: string,
+    key: K,
+    value: Project[K]
+  ) {
+    setContent((current) =>
+      current
+        ? {
+            ...current,
+            projects: current.projects.map((project) =>
+              project.slug === slug ? { ...project, [key]: value } : project
+            ),
+          }
+        : current
+    );
+  }
+
+  function setStudyField<K extends keyof NonNullable<Project["study"]>>(
+    slug: string,
+    key: K,
+    value: NonNullable<Project["study"]>[K]
+  ) {
+    setContent((current) =>
+      current
+        ? {
+            ...current,
+            projects: current.projects.map((project) =>
+              project.slug === slug && project.study
+                ? { ...project, study: { ...project.study, [key]: value } }
+                : project
+            ),
+          }
+        : current
     );
   }
 
@@ -184,7 +227,9 @@ export default function AdminPage() {
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--color-line)] pb-6">
           <div>
             <p className="text-meta">Portfolio editor</p>
-            <h1 className="mt-2 text-3xl font-medium tracking-tight">Edit profile</h1>
+            <h1 className="mt-2 text-3xl font-medium tracking-tight">
+              {activeTab === "profile" ? "Edit profile" : "Edit projects"}
+            </h1>
           </div>
           <div className="flex items-center gap-2">
             <Link
@@ -212,6 +257,24 @@ export default function AdminPage() {
           </div>
         </header>
 
+        <div className="flex gap-2 border-b border-[var(--color-line)] py-4">
+          {(["profile", "projects"] as const).map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setActiveTab(tab)}
+              className={`min-h-10 rounded-full px-5 text-sm capitalize ${
+                activeTab === tab
+                  ? "bg-[var(--color-fg)] text-[var(--color-bg)]"
+                  : "border border-[var(--color-line)]"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {activeTab === "profile" ? (
         <div className="grid gap-6 py-8 lg:grid-cols-2">
           <section className="rounded-3xl border border-[var(--color-line)] p-5 sm:p-7">
             <h2 className="text-lg font-medium">Identity</h2>
@@ -282,6 +345,15 @@ export default function AdminPage() {
             </label>
           </section>
         </div>
+        ) : (
+          <ProjectsEditor
+            projects={content.projects}
+            selectedSlug={selectedProject}
+            onSelect={setSelectedProject}
+            onProjectChange={setProjectField}
+            onStudyChange={setStudyField}
+          />
+        )}
 
         <footer className="sticky bottom-4 flex items-center justify-between gap-4 rounded-2xl border border-[var(--color-line)] bg-[var(--color-bg)]/95 px-4 py-3 backdrop-blur">
           <p className="max-w-xl text-sm text-[var(--color-muted)]">{message || "Changes publish to the portfolio source."}</p>
@@ -296,5 +368,154 @@ export default function AdminPage() {
         </footer>
       </div>
     </main>
+  );
+}
+
+function ProjectsEditor({
+  projects,
+  selectedSlug,
+  onSelect,
+  onProjectChange,
+  onStudyChange,
+}: {
+  projects: Project[];
+  selectedSlug: string | null;
+  onSelect: (slug: string) => void;
+  onProjectChange: <K extends keyof Project>(
+    slug: string,
+    key: K,
+    value: Project[K]
+  ) => void;
+  onStudyChange: <K extends keyof NonNullable<Project["study"]>>(
+    slug: string,
+    key: K,
+    value: NonNullable<Project["study"]>[K]
+  ) => void;
+}) {
+  const project = projects.find((item) => item.slug === selectedSlug);
+  if (!project) {
+    return <p className="py-12 text-sm text-[var(--color-muted)]">No projects found.</p>;
+  }
+
+  const textField = (
+    label: string,
+    value: string,
+    onChange: (value: string) => void,
+    multiline = false
+  ) => (
+    <label className="mt-5 block text-sm">
+      {label}
+      {multiline ? (
+        <textarea
+          className={`${field} min-h-28 resize-y`}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+        />
+      ) : (
+        <input
+          className={field}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+        />
+      )}
+    </label>
+  );
+
+  const listField = (
+    label: string,
+    value: string[],
+    onChange: (value: string[]) => void
+  ) =>
+    textField(label, value.join("\n"), (text) => onChange(text.split("\n")), true);
+
+  return (
+    <div className="grid gap-6 py-8 lg:grid-cols-[220px_1fr]">
+      <nav aria-label="Projects" className="flex flex-col gap-2">
+        {projects.map((item) => (
+          <button
+            key={item.slug}
+            type="button"
+            onClick={() => onSelect(item.slug)}
+            className={`rounded-xl border px-4 py-3 text-left text-sm ${
+              item.slug === project.slug
+                ? "border-[var(--color-fg)]"
+                : "border-[var(--color-line)]"
+            }`}
+          >
+            <span className="block text-meta">{item.number}</span>
+            <span className="mt-1 block font-medium">{item.title}</span>
+          </button>
+        ))}
+      </nav>
+
+      <div className="grid gap-6">
+        <section className="rounded-3xl border border-[var(--color-line)] p-5 sm:p-7">
+          <p className="text-meta">Project details</p>
+          {textField("Title", project.title, (value) => onProjectChange(project.slug, "title", value))}
+          {textField("Category", project.category, (value) => onProjectChange(project.slug, "category", value))}
+          {textField("Short description", project.description, (value) => onProjectChange(project.slug, "description", value), true)}
+          {textField("Project description", project.longDescription, (value) => onProjectChange(project.slug, "longDescription", value), true)}
+          {textField("Your role", project.role, (value) => onProjectChange(project.slug, "role", value), true)}
+          {listField("Technologies (one per line)", project.technologies, (value) => onProjectChange(project.slug, "technologies", value))}
+        </section>
+
+        <section className="rounded-3xl border border-[var(--color-line)] p-5 sm:p-7">
+          <p className="text-meta">Links and appearance</p>
+          {textField("GitHub URL", project.github || "", (value) => onProjectChange(project.slug, "github", value || null))}
+          {textField("Live project URL", project.live || "", (value) => onProjectChange(project.slug, "live", value || null))}
+          {textField("Image path under public/ (example: /projects/app.png)", project.image || "", (value) => onProjectChange(project.slug, "image", value || null))}
+          {textField("Background image path under public/", project.imageBack || "", (value) => onProjectChange(project.slug, "imageBack", value || null))}
+          {textField("Image description", project.imageAlt, (value) => onProjectChange(project.slug, "imageAlt", value))}
+          <label className="mt-5 flex items-center gap-3 text-sm">
+            <input
+              type="checkbox"
+              checked={project.featured}
+              onChange={(event) => onProjectChange(project.slug, "featured", event.target.checked)}
+            />
+            Show in featured work
+          </label>
+          {project.study && (
+            <label className="mt-5 flex items-center gap-3 text-sm">
+              <input
+                type="checkbox"
+                checked={project.caseStudy}
+                onChange={(event) => onProjectChange(project.slug, "caseStudy", event.target.checked)}
+              />
+              Show case-study link
+            </label>
+          )}
+          <label className="mt-5 block text-sm">
+            Card layout
+            <select
+              className={field}
+              value={project.layout}
+              onChange={(event) =>
+                onProjectChange(project.slug, "layout", event.target.value as Project["layout"])
+              }
+            >
+              <option value="wide">Wide</option>
+              <option value="split">Split</option>
+              <option value="stack">Stack</option>
+            </select>
+          </label>
+        </section>
+
+        {project.study && (
+          <section className="rounded-3xl border border-[var(--color-line)] p-5 sm:p-7">
+            <p className="text-meta">Case study copy</p>
+            {textField("Overview", project.study.overview, (value) => onStudyChange(project.slug, "overview", value), true)}
+            {textField("Problem", project.study.problem, (value) => onStudyChange(project.slug, "problem", value), true)}
+            {textField("Context", project.study.context, (value) => onStudyChange(project.slug, "context", value), true)}
+            {textField("Role", project.study.role, (value) => onStudyChange(project.slug, "role", value), true)}
+            {listField("Approach (one per line)", project.study.approach, (value) => onStudyChange(project.slug, "approach", value))}
+            {listField("Implementation (one per line)", project.study.implementation, (value) => onStudyChange(project.slug, "implementation", value))}
+            {listField("Challenges (one per line)", project.study.challenges, (value) => onStudyChange(project.slug, "challenges", value))}
+            {listField("Testing and validation (one per line)", project.study.validation, (value) => onStudyChange(project.slug, "validation", value))}
+            {textField("Result", project.study.result, (value) => onStudyChange(project.slug, "result", value), true)}
+            {listField("Lessons (one per line)", project.study.lessons, (value) => onStudyChange(project.slug, "lessons", value))}
+          </section>
+        )}
+      </div>
+    </div>
   );
 }
